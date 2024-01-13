@@ -50,6 +50,7 @@ public class ContactServiceImpl implements ContactService {
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
     }
 
+    @Transactional
     @Override
     public ContactReadDto create(ContactCreateDto contact) {
         return Optional.of(contact)
@@ -59,6 +60,7 @@ public class ContactServiceImpl implements ContactService {
                 .orElseThrow(() -> new ResponseStatusException(BAD_REQUEST));
     }
 
+    @Transactional
     @Override
     public ContactReadDto updateById(Long id, ContactCreateDto contact) {
         return contactRepository.findById(id)
@@ -68,19 +70,28 @@ public class ContactServiceImpl implements ContactService {
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
     }
 
+    @Transactional
     @Override
     public ContactReadDto updateByNumber(String phoneNumber, ContactCreateDto contact) {
-        return null;
+        return contactRepository.findByPhoneNumber(phoneNumber)
+                .map(entity -> copy(contact, entity))
+                .map(contactRepository::saveAndFlush)
+                .map(ContactReadMapper.INSTANCE::toDto)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
     }
 
+    @Transactional
     @Override
     public void deleteById(Long id) {
-
+        contactRepository.findById(id)
+                .ifPresent(entity -> contactRepository.deleteById(id));
     }
 
+    @Transactional
     @Override
     public void deleteByPhoneNumber(String phoneNumber) {
-
+        contactRepository.findByPhoneNumber(phoneNumber)
+                .ifPresent(entity -> contactRepository.deleteById(entity.getId()));
     }
 
     private Contact copy(ContactCreateDto fromObject, Contact toObject) {
