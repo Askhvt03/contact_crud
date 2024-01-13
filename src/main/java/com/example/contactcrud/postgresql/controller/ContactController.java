@@ -59,5 +59,16 @@ public class ContactController {
         return ResponseEntity.ok(contactReadDto);
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(NO_CONTENT)
+    public void deleteById(@PathVariable("id") Long id){
+        contactService.deleteById(id);
+    }
+
+    @DeleteMapping("/phone/{phoneNumber}")
+    @ResponseStatus(NO_CONTENT)
+    public void  deleteByPhoneNumber(@PathVariable("phoneNumber") String phoneNumber){
+        contactService.deleteByPhoneNumber(phoneNumber);
+    }
 
 }

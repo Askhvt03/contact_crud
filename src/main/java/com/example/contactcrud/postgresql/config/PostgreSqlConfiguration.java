@@ -53,7 +53,7 @@ public class PostgreSqlConfiguration {
             EntityManagerFactoryBuilder builder,
             @Qualifier("postgreSqlDataSource") DataSource dataSource) {
         return builder.dataSource(dataSource)
-                .packages("com.example.greetgotestassignment.postgresql.entity")
+                .packages("com.example.contactcrud.postgresql.entity")
                 .build();
     }
 
